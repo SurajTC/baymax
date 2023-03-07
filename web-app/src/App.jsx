@@ -1,162 +1,64 @@
-// import { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 
-import {
-  Container,
-  Box,
-  Heading,
-  Flex,
-  Center,
-  Textarea,
-  IconButton,
-  Grid,
-  GridItem,
-  Card,
-  CardBody,
-  Text,
-  Avatar,
-} from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import AppShell from "./components/AppShell";
+import Message from "./components/Message";
+
+const system = {
+  role: "system",
+  content: "act like a first aid chat bot",
+};
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + import.meta.env.VITE_OPENAI_API_KEY,
+};
 
 function App() {
-  // const [count, setCount] = useState(0);
+  const [value, setValue] = useState("");
+  const [history, setHistory] = useState([
+    {
+      role: "assistant",
+      content: "Hello! I am your assistant, ask me anything.",
+    },
+  ]);
+  const handleChange = (event) => setValue(event.target.value);
+  const chatAPI = async () => {
+    const url = "https://api.openai.com/v1/chat/completions";
+
+    axios
+      .post(
+        url,
+        {
+          model: "gpt-3.5-turbo",
+          messages: [system, ...history],
+        },
+        {
+          headers: headers,
+        }
+      )
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data);
+        setHistory((prev) => [...prev, data.choices[0].message]);
+      });
+  };
+  const handleSubmit = async () => {
+    setHistory((prev) => [...prev, { role: "user", content: value }]);
+    setValue("");
+    chatAPI();
+  };
 
   return (
     <div>
-      <Container maxW="8xl" p={0}>
-        <Flex direction="column" height="100vh">
-          <Flex
-            justifyContent="center"
-            alignItems="center"
-            bg="blue.400"
-            w="100%"
-            p={2}
-          >
-            <Heading>First Aid ChatBot</Heading>
-          </Flex>
-          <Box flexGrow={1} p={4}>
-            <Grid templateColumns="auto 1fr auto" gap={2} rowGap={6}>
-              <GridItem>
-                <Avatar
-                  mt={1}
-                  visibility="hidden"
-                  name="John"
-                  src="https://i.pravatar.cc/150?img=66"
-                />
-              </GridItem>
-              <GridItem justifySelf="end">
-                <Card>
-                  <CardBody>
-                    <Text>
-                      I have got a cut on my hand and it's bleeding, what to do?
-                    </Text>
-                  </CardBody>
-                </Card>
-              </GridItem>
-              <GridItem>
-                <Avatar
-                  mt={1}
-                  name="John"
-                  src="https://i.pravatar.cc/150?img=66"
-                />
-              </GridItem>
-              {/*  */}
-              <GridItem>
-                <Avatar
-                  mt={1}
-                  name="Bot"
-                  src="https://api.dicebear.com/5.x/bottts-neutral/svg?seed=Gracie"
-                />
-              </GridItem>
-              <GridItem justifySelf="start">
-                <Card>
-                  <CardBody>
-                    <Text>
-                      I can assist you with the first aid procedure for your
-                      wound! <br />
-                      <br />
-                      Bleeding from small cuts and grazes can be controlled by
-                      applying pressure to the cut using a clean, non-fluffy pad
-                      (preferably a sterile dressing, if you have one). You
-                      should also raise the injured body part above the level of
-                      the heart so the bleeding slows down and stops. <br />
-                      If the bleeding continues you should seek medical help or
-                      call 911.
-                    </Text>
-                  </CardBody>
-                </Card>
-              </GridItem>
-              <GridItem>
-                <Avatar
-                  mt={1}
-                  visibility="hidden"
-                  name="Bot"
-                  src="https://i.pravatar.cc/150?img=66"
-                />
-              </GridItem>
-              {/*  */}
-              <GridItem>
-                <Avatar
-                  mt={1}
-                  visibility="hidden"
-                  name="John"
-                  src="https://i.pravatar.cc/150?img=66"
-                />
-              </GridItem>
-              <GridItem justifySelf="end">
-                <Card>
-                  <CardBody>
-                    <Text>
-                      Thank you! That worked and the bleeding is stopped.
-                    </Text>
-                  </CardBody>
-                </Card>
-              </GridItem>
-              <GridItem>
-                <Avatar
-                  mt={1}
-                  name="John"
-                  src="https://i.pravatar.cc/150?img=66"
-                />
-              </GridItem>
-
-              {/*  */}
-              <GridItem>
-                <Avatar
-                  mt={1}
-                  name="Bot"
-                  src="https://api.dicebear.com/5.x/bottts-neutral/svg?seed=Gracie"
-                />
-              </GridItem>
-              <GridItem justifySelf="start">
-                <Card>
-                  <CardBody>
-                    <Text>
-                      That sounds great! It is my pleasure to assist you.
-                    </Text>
-                  </CardBody>
-                </Card>
-              </GridItem>
-              <GridItem>
-                <Avatar
-                  mt={1}
-                  visibility="hidden"
-                  name="Bot"
-                  src="https://i.pravatar.cc/150?img=66"
-                />
-              </GridItem>
-            </Grid>
-          </Box>
-          <Flex p={1} gap={2}>
-            <Textarea placeholder="Enter your text here" resize="none" />
-            <IconButton
-              alignSelf="flex-end"
-              colorScheme="blue"
-              aria-label="Search database"
-              icon={<SearchIcon />}
-            />
-          </Flex>
-        </Flex>
-      </Container>
+      <AppShell
+        value={value}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+      >
+        {history.map((m, i) => (
+          <Message key={i} role={m.role} content={m.content} />
+        ))}
+      </AppShell>
     </div>
   );
 }
