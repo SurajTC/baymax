@@ -10,7 +10,7 @@ const system = {
 };
 const headers = {
   "Content-Type": "application/json",
-  Authorization: "Bearer " + "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",
+  Authorization: "Bearer " + import.meta.env.VITE_OPENAI_API_KEY,
 };
 
 function App() {
