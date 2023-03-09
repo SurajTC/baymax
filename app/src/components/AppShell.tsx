@@ -1,22 +1,25 @@
-import React from "react";
 import {
-  Container,
   Box,
-  Heading,
+  Container,
   Flex,
-  Center,
-  Textarea,
+  Heading,
   IconButton,
-  Grid,
-  GridItem,
-  Card,
-  CardBody,
-  Text,
-  Avatar,
+  Textarea,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import Bubble from "components/Bubble";
+import { Message, Role } from "model/Chat";
 
-const AppShell = ({ value, handleChange, handleSubmit, children }) => {
+interface Props {
+  children: JSX.Element;
+}
+
+const msg: Message = {
+  role: Role.USER,
+  content: "blah blah blah",
+  timestamp: new Date(),
+};
+
+const AppShell = ({ children }: Props) => {
   return (
     <Container maxW="8xl" p={0}>
       <Flex direction="column" height="100vh">
@@ -31,21 +34,21 @@ const AppShell = ({ value, handleChange, handleSubmit, children }) => {
         </Flex>
         <Box flexGrow={1} p={4}>
           {children}
+          <Bubble message={msg} />
         </Box>
         <Flex p={1} gap={2}>
           <Textarea
-            value={value}
+            // value={value}
             placeholder="Enter your text here"
             resize="none"
-            onChange={handleChange}
+            // onChange={handleChange}
           />
           <IconButton
             alignSelf="flex-end"
             colorScheme="blue"
             aria-label="Search database"
-            icon={<SearchIcon />}
+            icon={<p>X</p>}
             type="submit"
-            onClick={handleSubmit}
           />
         </Flex>
       </Flex>
