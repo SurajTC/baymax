@@ -17,13 +17,15 @@ const App = () => {
       role: Role.USER,
     },
     onSubmit: (values, { resetForm }) => {
-      setIsLoading(true);
-      setHistory((prev) => [
-        ...prev,
-        { role: Role.USER, content: values.content, timestamp: new Date() },
-      ]);
-      resetForm();
-      submitPrompt(history);
+      if (values.content.length) {
+        setIsLoading(true);
+        setHistory((prev) => [
+          ...prev,
+          { role: Role.USER, content: values.content, timestamp: new Date() },
+        ]);
+        resetForm();
+        submitPrompt(history);
+      }
     },
   });
   return (
