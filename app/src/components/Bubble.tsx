@@ -6,7 +6,7 @@ import {
   CardFooter,
   Text,
 } from "@chakra-ui/react";
-import { Message, Role } from "model/Chat";
+import { Message, Role } from "model/chat";
 
 interface Props {
   message: Message;
