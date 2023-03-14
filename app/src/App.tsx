@@ -5,9 +5,10 @@ import Bubble from "components/Bubble";
 import TextBox from "components/TextBox";
 import { useFormik } from "formik";
 import { useChatAPI } from "hooks/useChatAPI";
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
 const App = () => {
+  const date = new Date();
   const [history, setHistory] = useState<Message[]>([initMsg]);
   const [isLoading, setIsLoading] = useState(false);
   const { mutate: submitPrompt } = useChatAPI({ setHistory, setIsLoading });
@@ -31,10 +32,26 @@ const App = () => {
   return (
     <AppShell>
       <>
-        <Box p={4} flexGrow={1}>
-          {history.map((item, index) => (
-            <Bubble key={index} message={item} />
-          ))}
+        <Box
+          flexGrow={1}
+          overflowY="scroll"
+          display="flex"
+          flexDirection="column-reverse"
+        >
+          <Box p={4} pb={8}>
+            {history.map((item, index) => (
+              <Bubble key={index} message={item} />
+            ))}
+          </Box>
+          <Box>
+            <Text width="100%" color="GrayText" textAlign="center">
+              {date.getDate() +
+                " " +
+                date.toLocaleString("default", { month: "short" }) +
+                " " +
+                date.getFullYear()}
+            </Text>
+          </Box>
         </Box>
         <TextBox formik={formik} isLoading={isLoading} />
       </>

@@ -18,7 +18,7 @@ interface Props {
 const TextBox = ({ formik, isLoading }: Props) => {
   return (
     formik && (
-      <Box m={4}>
+      <Box p={4} position="fixed" bottom={0} width="100%" bg="Background">
         <Flex gap={2} alignItems="end">
           <FormControl isInvalid={false}>
             <FormLabel>Ask me anything</FormLabel>

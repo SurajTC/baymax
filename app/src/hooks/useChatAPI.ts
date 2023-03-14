@@ -20,6 +20,7 @@ const chatAPI = async (history: Message[]) => {
     url,
     {
       model: "gpt-3.5-turbo",
+      temperature: 0.6,
       messages: removeTimestamps([SystemMsg, ...history]),
     },
     {
